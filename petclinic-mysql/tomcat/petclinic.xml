@@ -1,0 +1,5 @@
+<Context docBase="WAR_LOC" >  
+	<Resource name="jdbc/petclinic" auth="Container" type="javax.sql.DataSource" maxActive="20" 
+	maxIdle="15" maxWait="10000" username="root" 
+	driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://108.171.177.40:3306/petclinic"/>	
+</Context>
