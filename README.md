@@ -4,6 +4,7 @@ Cloud Bursting Example Architecture
 Introduction
 ------------
 This is an example implementation of a Cloud Bursting architecture, with Workload Migration and Data Synchronization patterns.
+
 It uses Spring's PetClinic reference application running on Tomcat with a MySQL back-end DB on each site, and GigaSpaces XAP to replicate data between the sites. 
 GigaSpaces Cloudify is used to support workload migration by automating spin-up of the secondary site in case of peak load.
 
