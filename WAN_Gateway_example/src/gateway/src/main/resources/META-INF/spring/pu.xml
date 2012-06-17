@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:os-gateway="http://www.openspaces.org/schema/core/gateway"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.openspaces.org/schema/core/gateway http://www.openspaces.org/schema/9.0/core/gateway/openspaces-gateway.xsd">
+
+
+    <bean id="propertiesConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <props>
+                <prop key="localGatewayName">SITE-1</prop>
+                <prop key="targetGatewayName">SITE-2</prop>
+                <prop key="localClusterUrl">jini://*/*/space1?groups=idan1</prop>
+                
+                <prop key="localGatewayHost">localhost</prop>
+                <prop key="localGatewayDiscoveryPort">70000</prop>
+                <prop key="localGatewayLrmiPort">70001</prop>
+                
+                <prop key="targetGatewayHost">192.168.9.132</prop>
+                <prop key="targetGatewayDiscoveryPort">70000</prop>
+                <prop key="targetGatewayLrmiPort">70001</prop>
+            </props>
+        </property>
+    </bean>
+
+    <context:annotation-config/>
+ 
+    <os-gateway:delegator id="delegator" local-gateway-name="${localGatewayName}" gateway-lookups="gatewayLookups">
+   		<os-gateway:delegation target="${targetGatewayName}"/>
+    </os-gateway:delegator>
+
+    <os-gateway:sink id="sink" local-gateway-name="${localGatewayName}" gateway-lookups="gatewayLookups" local-space-url="${localClusterUrl}">
+	    <os-gateway:sources>    
+	    	<os-gateway:source name="${localGatewayName}" />
+	    	<os-gateway:source name="${targetGatewayName}" />
+	    </os-gateway:sources>
+    </os-gateway:sink>
+
+    <os-gateway:lookups id="gatewayLookups">
+    	<os-gateway:lookup gateway-name="${localGatewayName}" host="${localGatewayHost}" discovery-port="${localGatewayDiscoveryPort}" communication-port="${localGatewayLrmiPort}" />
+    	<os-gateway:lookup gateway-name="${targetGatewayName}" host="${targetGatewayHost}" discovery-port="${targetGatewayDiscoveryPort}" communication-port="${targetGatewayLrmiPort}" />
+    </os-gateway:lookups>
+
+
+
+
+</beans>

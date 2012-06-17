@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:os-core="http://www.openspaces.org/schema/core"
+       xmlns:os-events="http://www.openspaces.org/schema/events"
+       xmlns:os-remoting="http://www.openspaces.org/schema/remoting"
+       xmlns:os-sla="http://www.openspaces.org/schema/sla"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.openspaces.org/schema/core http://www.openspaces.org/schema/9.0/core/openspaces-core.xsd
+       http://www.openspaces.org/schema/events http://www.openspaces.org/schema/9.0/events/openspaces-events.xsd
+       http://www.openspaces.org/schema/remoting http://www.openspaces.org/schema/9.0/remoting/openspaces-remoting.xsd
+       http://www.openspaces.org/schema/sla http://www.openspaces.org/schema/sla/8.0/openspaces-sla.xsd">
+
+
+    <!--
+        Spring propery configurer which allows us to use system properties (such as user.name).
+    -->
+    <bean id="propertiesConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <props>
+                <prop key="localGatewayName">SITE-1</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--
+        A bean representing a space (an IJSpace implementation).
+
+        Note, we perform a lookup on the space since we are working against a remote space.
+    -->
+    <os-core:space id="space" url="jini://*/*/space1?groups=idan1" />
+
+    <!--
+        OpenSpaces simplified space API built on top of IJSpace/JavaSpace.
+    -->
+    <os-core:giga-space id="gigaSpace" space="space"/>
+
+    <!--
+        The Data feeder bean, writing new Data objects to the space in a constant interval.
+    -->
+    <bean id="dataFeeder" class="com.gigaspaces.poc.feeder.Feeder" depends-on="gigaSpace">
+        <property name="queriesLogFilePath" value="D:\Tools\mysql-5.5.24-winx64\data\queries.txt" />
+        <property name="gigaSpace" ref="gigaSpace" />
+        <property name="siteName" value="${localGatewayName}" />
+    </bean>
+    
+</beans>
