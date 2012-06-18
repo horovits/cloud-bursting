@@ -19,6 +19,7 @@ Order of system bootstrap is as per above.
 
 Content
 -------
+* Cheatsheet with detailed explanation on the system and how to configure it to your IaaS: https://github.com/dotanh/cloud-bursting/blob/master/Cloud_Bursting_cheatsheet.pdf (also in editable RTF format)
 * DB scripts for setting up the logging, schema and demo data for the PetClinic application
 * PetClinic application (.war) file
 * WAN replication gateway module
