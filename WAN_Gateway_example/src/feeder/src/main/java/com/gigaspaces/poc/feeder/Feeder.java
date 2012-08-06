@@ -22,6 +22,7 @@ public class Feeder implements DisposableBean, InitializingBean {
 	private FileMonitor fileMonitor;
 	private GigaSpace gigaSpace;
 	private String queriesLogFilePath;
+	private String indexFilePath;
 	private String siteName;
 
 	
@@ -33,6 +34,10 @@ public class Feeder implements DisposableBean, InitializingBean {
 		this.queriesLogFilePath = queriesLogFilePath;
 	}
 
+	public void setIndexFilePath(String indexFilePath) {
+		this.indexFilePath = indexFilePath;
+	}
+
 	public void setSiteName(String siteName) {
 		this.siteName = siteName;
 	}
@@ -40,7 +45,7 @@ public class Feeder implements DisposableBean, InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		final QueryLogParser parser = new MySQLQueryLogParser();		
-		fileMonitor = new FileMonitor(queriesLogFilePath,	new FileMonitorListener() {
+		fileMonitor = new FileMonitor(queriesLogFilePath, indexFilePath, new FileMonitorListener() {
 			@Override
 			public void onFileModified(List<String> newContent) {
 				List<String> queries = parser.getQueries(newContent);
