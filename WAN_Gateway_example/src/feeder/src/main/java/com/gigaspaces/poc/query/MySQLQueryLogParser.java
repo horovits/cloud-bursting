@@ -9,10 +9,16 @@ public class MySQLQueryLogParser implements QueryLogParser {
 
 	private Pattern queryPattern;
 	private Pattern executeQueryPattern;
+	private Pattern startTransactionQueryPattern;
+	private Pattern commitTransactionQueryPattern;
+	private Pattern rollbackTransactionQueryPattern;
 	
     public MySQLQueryLogParser() {
-    	this.executeQueryPattern = Pattern.compile(".*(?i)(query|execute).*");
-		this.queryPattern = Pattern.compile("(?i)(insert|update|delete).*");
+    	this.executeQueryPattern = Pattern.compile(".*(?i)(query|execute).*"); //exclude 'prepare' statements etc.
+		this.queryPattern = Pattern.compile("(?i)(insert|update|delete|START TRANSACTION|\\sCOMMIT|ROLLBACK).*");
+		this.startTransactionQueryPattern = Pattern.compile("(START TRANSACTION).*", Pattern.CASE_INSENSITIVE);
+		this.commitTransactionQueryPattern = Pattern.compile("(COMMIT).*", Pattern.CASE_INSENSITIVE);
+		this.rollbackTransactionQueryPattern = Pattern.compile("(ROLLBACK).*", Pattern.CASE_INSENSITIVE);
 	}
 	
 	@Override
@@ -30,6 +36,21 @@ public class MySQLQueryLogParser implements QueryLogParser {
         }
 		
 		return queries;
+	}
+
+	@Override
+	public boolean isStartTransaction(String query) {
+		return startTransactionQueryPattern.matcher(query).find();
+	}
+
+	@Override
+	public boolean isCommitTransaction(String query) {
+		return commitTransactionQueryPattern.matcher(query).find();
+	}
+
+	@Override
+	public boolean isRollbackTransaction(String query) {
+		return rollbackTransactionQueryPattern.matcher(query).find();
 	}
 
 }
