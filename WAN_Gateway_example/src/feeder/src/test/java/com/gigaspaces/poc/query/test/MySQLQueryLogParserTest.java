@@ -22,8 +22,18 @@ public class MySQLQueryLogParserTest {
 		queries.add("120522 15:45:37	    5 Prepare	UPDATE owners SET first_name=?, last_name=?, address=?, city=?, telephone=? WHERE id=?");
 		queries.add("120522 15:45:37	    5 Execute	UPDATE owners SET first_name='joe', last_name='dow', address='5', city='Herzeliya', telephone='5' WHERE id=11"); // GOOD
 		queries.add("120522 15:45:37	    5 Query     update owners set address = 'holon' where id=11");
-		
-		Assert.assertEquals(3, parser.getQueries(queries).size());
+		queries.add("120522 15:45:37	    2 Query	start transaction");
+		queries.add("120522 15:45:37	    5 Query     update owners set address = 'netanya' where id=11");
+		queries.add("120522 15:45:37	    2 Query	commit");
+
+		Assert.assertEquals(6, parser.getQueries(queries).size());
+	}
+	
+	@Test
+	public void testIsStartTransaction() {
+		MySQLQueryLogParser parser = new MySQLQueryLogParser();
+		String query = "start transaction";
+		Assert.assertTrue(parser.isStartTransaction(query));
 	}
 	
 //	@Test
